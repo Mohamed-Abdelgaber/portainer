@@ -88,6 +88,7 @@ function StateManagerFactory(
     state.application.version = status.Version;
     state.application.edition = status.Edition;
     state.application.instanceId = status.InstanceID;
+    state.application.isDemo = status.DemoEnvironment;
 
     state.application.enableTelemetry = settings.EnableTelemetry;
     state.application.logo = settings.LogoURL;

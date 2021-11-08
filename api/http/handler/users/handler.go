@@ -34,14 +34,16 @@ type Handler struct {
 	apiKeyService apikey.APIKeyService
 	DataStore     dataservices.DataStore
 	CryptoService portainer.CryptoService
+	isDemo        bool
 }
 
 // NewHandler creates a handler to manage user operations.
-func NewHandler(bouncer *security.RequestBouncer, rateLimiter *security.RateLimiter, apiKeyService apikey.APIKeyService) *Handler {
+func NewHandler(bouncer *security.RequestBouncer, rateLimiter *security.RateLimiter, apiKeyService apikey.APIKeyService, isDemo bool) *Handler {
 	h := &Handler{
 		Router:        mux.NewRouter(),
 		bouncer:       bouncer,
 		apiKeyService: apiKeyService,
+		isDemo:        isDemo,
 	}
 	h.Handle("/users",
 		bouncer.AdminAccess(httperror.LoggerHandler(h.userCreate))).Methods(http.MethodPost)

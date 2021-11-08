@@ -74,6 +74,9 @@ angular.module('portainer.app').controller('AccountController', [
     };
 
     async function initView() {
+      const state = StateManager.getState();
+      $scope.isDemo = state.application.isDemo;
+
       $scope.userID = Authentication.getUserDetails().ID;
 
       const data = await UserService.user($scope.userID);

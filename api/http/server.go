@@ -121,7 +121,15 @@ func (server *Server) Start() error {
 	adminMonitor := adminmonitor.New(5*time.Minute, server.DataStore, server.ShutdownCtx)
 	adminMonitor.Start()
 
-	var backupHandler = backup.NewHandler(requestBouncer, server.DataStore, offlineGate, server.FileService.GetDatastorePath(), server.ShutdownTrigger, adminMonitor)
+	var backupHandler = backup.NewHandler(
+		requestBouncer,
+		server.DataStore,
+		offlineGate,
+		server.FileService.GetDatastorePath(),
+		server.ShutdownTrigger,
+		adminMonitor,
+		server.Status.DemoEnvironment,
+	)
 
 	var roleHandler = roles.NewHandler(requestBouncer)
 	roleHandler.DataStore = server.DataStore
@@ -148,7 +156,7 @@ func (server *Server) Start() error {
 	var edgeTemplatesHandler = edgetemplates.NewHandler(requestBouncer)
 	edgeTemplatesHandler.DataStore = server.DataStore
 
-	var endpointHandler = endpoints.NewHandler(requestBouncer)
+	var endpointHandler = endpoints.NewHandler(requestBouncer, server.Status.DemoEnvironment)
 	endpointHandler.DataStore = server.DataStore
 	endpointHandler.FileService = server.FileService
 	endpointHandler.ProxyManager = server.ProxyManager
@@ -199,7 +207,7 @@ func (server *Server) Start() error {
 	var resourceControlHandler = resourcecontrols.NewHandler(requestBouncer)
 	resourceControlHandler.DataStore = server.DataStore
 
-	var settingsHandler = settings.NewHandler(requestBouncer)
+	var settingsHandler = settings.NewHandler(requestBouncer, server.Status.DemoEnvironment)
 	settingsHandler.DataStore = server.DataStore
 	settingsHandler.FileService = server.FileService
 	settingsHandler.JWTService = server.JWTService
@@ -250,7 +258,7 @@ func (server *Server) Start() error {
 	var uploadHandler = upload.NewHandler(requestBouncer)
 	uploadHandler.FileService = server.FileService
 
-	var userHandler = users.NewHandler(requestBouncer, rateLimiter, server.APIKeyService)
+	var userHandler = users.NewHandler(requestBouncer, rateLimiter, server.APIKeyService, server.Status.DemoEnvironment)
 	userHandler.DataStore = server.DataStore
 	userHandler.CryptoService = server.CryptoService
 

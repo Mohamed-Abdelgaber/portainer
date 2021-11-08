@@ -24,12 +24,14 @@ type Handler struct {
 	JWTService      dataservices.JWTService
 	LDAPService     portainer.LDAPService
 	SnapshotService portainer.SnapshotService
+	isDemo          bool
 }
 
 // NewHandler creates a handler to manage settings operations.
-func NewHandler(bouncer *security.RequestBouncer) *Handler {
+func NewHandler(bouncer *security.RequestBouncer, isDemo bool) *Handler {
 	h := &Handler{
 		Router: mux.NewRouter(),
+		isDemo: isDemo,
 	}
 	h.Handle("/settings",
 		bouncer.AdminAccess(httperror.LoggerHandler(h.settingsInspect))).Methods(http.MethodGet)

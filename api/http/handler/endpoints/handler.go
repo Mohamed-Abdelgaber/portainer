@@ -35,13 +35,15 @@ type Handler struct {
 	AuthorizationService *authorization.Service
 	BindAddress          string
 	BindAddressHTTPS     string
+	isDemo               bool
 }
 
 // NewHandler creates a handler to manage environment(endpoint) operations.
-func NewHandler(bouncer *security.RequestBouncer) *Handler {
+func NewHandler(bouncer *security.RequestBouncer, isDemo bool) *Handler {
 	h := &Handler{
 		Router:         mux.NewRouter(),
 		requestBouncer: bouncer,
+		isDemo:         isDemo,
 	}
 
 	h.Handle("/endpoints",
