@@ -46,10 +46,11 @@ func NewHandler(
 		adminMonitor:    adminMonitor,
 	}
 
-	h.Use(middlewares.RestrictDemoEnv(isDemo))
+	demoRestirctedRouter := h.NewRoute().Subrouter()
+	demoRestirctedRouter.Use(middlewares.RestrictDemoEnv(isDemo))
 
-	h.Handle("/backup", bouncer.RestrictedAccess(adminAccess(httperror.LoggerHandler(h.backup)))).Methods(http.MethodPost)
-	h.Handle("/restore", bouncer.PublicAccess(httperror.LoggerHandler(h.restore))).Methods(http.MethodPost)
+	demoRestirctedRouter.Handle("/backup", bouncer.RestrictedAccess(adminAccess(httperror.LoggerHandler(h.backup)))).Methods(http.MethodPost)
+	demoRestirctedRouter.Handle("/restore", bouncer.PublicAccess(httperror.LoggerHandler(h.restore))).Methods(http.MethodPost)
 
 	return h
 }
