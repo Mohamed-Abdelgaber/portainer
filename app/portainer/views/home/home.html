@@ -46,14 +46,14 @@
 <div class="row" ng-if="!state.connectingToEdgeEndpoint">
   <div class="col-sm-12">
     <endpoint-list
-      title-text="Environments"
-      title-icon="fa-plug"
-      table-key="home_endpoints"
+      title-text="'Environments'"
+      title-icon="'fa-plug'"
+      endpoints="endpoints"
       tags="tags"
-      dashboard-action="goToDashboard"
-      show-snapshot-action="isAdmin"
-      snapshot-action="triggerSnapshot"
-      edit-action="goToEdit"
+      on-click-item="(goToDashboard)"
+      on-refresh="(triggerSnapshot)"
+      is-refresh-visible="isAdmin"
+      on-edit="(goToEdit)"
       is-admin="isAdmin"
       retrieve-page="getPaginatedEndpoints"
       endpoint-init-time="state.homepageLoadTime"

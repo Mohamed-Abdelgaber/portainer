@@ -13,9 +13,11 @@ import headerModule from './Header';
 import { ReactExampleAngular } from './ReactExample';
 import { TooltipAngular } from './Tip/Tooltip';
 import { beFeatureIndicatorAngular } from './BEFeatureIndicator';
+import { EndpointListAngular } from './EndpointList';
 
 export default angular
   .module('portainer.app.components', [headerModule, boxSelectorModule, widgetModule, sidebarModule, gitFormModule, porAccessManagementModule, formComponentsModule])
+  .component('endpointList', EndpointListAngular)
   .component('portainerTooltip', TooltipAngular)
   .component('reactExample', ReactExampleAngular)
   .component('beFeatureIndicator', beFeatureIndicatorAngular)

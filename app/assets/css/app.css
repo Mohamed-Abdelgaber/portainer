@@ -368,10 +368,6 @@ a[ng-click] {
   background-color: var(--white-color) fff;
 }
 
-.pagination-controls {
-  margin-left: 10px;
-}
-
 .user-box {
   margin-right: 25px;
 }
