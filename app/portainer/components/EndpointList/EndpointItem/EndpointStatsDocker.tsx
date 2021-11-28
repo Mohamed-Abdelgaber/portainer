@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { DockerSnapshot } from '@/portainer/environments/types';
 import { pluralize } from '@/portainer/helpers/strings';
 
+import styles from './EndpointStatsDocker.module.css';
+
 interface EndpointStatsDockerProps {
   snapshots: DockerSnapshot[];
   type: number;
@@ -27,62 +29,60 @@ export function EndpointStatsDocker({
 
   return (
     <div className="blocklist-item-line endpoint-item">
-      <span className="blocklist-item-desc">
+      <span className={clsx('blocklist-item-desc', styles.description)}>
         <span>
-          <span style={{ padding: '0 7px 0 0' }}>
-            <i className="fa fa-th-list space-right" aria-hidden="true" />
-            <span className="space-right">{snapshot.StackCount}</span>
-            {pluralize(snapshot.StackCount, 'stack')}
-          </span>
+          <i className="fa fa-th-list space-right" aria-hidden="true" />
+          <span className="space-right">{snapshot.StackCount}</span>
+          {pluralize(snapshot.StackCount, 'stack')}
+        </span>
 
-          {!!snapshot.Swarm && (
-            <span style={{ padding: '0 7px 0 7px' }}>
-              <i className="fa fa-list-alt space-right" aria-hidden="true" />
-              <span className="space-right">{snapshot.ServiceCount}</span>
-              {pluralize(snapshot.ServiceCount, 'service')}
+        {!!snapshot.Swarm && (
+          <span>
+            <i className="fa fa-list-alt space-right" aria-hidden="true" />
+            <span className="space-right">{snapshot.ServiceCount}</span>
+            {pluralize(snapshot.ServiceCount, 'service')}
+          </span>
+        )}
+
+        <span>
+          <i className="fa fa-cubes space-right" aria-hidden="true" />
+          <span className="space-right">{containersCount}</span>
+          {pluralize(containersCount, 'container')}
+
+          {containersCount > 0 && (
+            <span>
+              <span className="space-right space-left">-</span>
+              <Stat
+                value={snapshot.RunningContainerCount}
+                iconClass="fa-power-off green-icon"
+              />
+              <Stat
+                value={snapshot.StoppedContainerCount}
+                iconClass="fa-power-off red-icon"
+              />
+              <span className="space-right space-left">/</span>
+              <Stat
+                value={snapshot.HealthyContainerCount}
+                iconClass="fa-heartbeat green-icon"
+              />
+              <Stat
+                value={snapshot.UnhealthyContainerCount}
+                iconClass="fa-heartbeat orange-icon"
+              />
             </span>
           )}
+        </span>
 
-          <span style={{ padding: '0 7px 0 7px' }}>
-            <i className="fa fa-cubes space-right" aria-hidden="true" />
-            <span className="space-right">{containersCount}</span>
-            {pluralize(containersCount, 'container')}
+        <span>
+          <i className="fa fa-hdd space-right" aria-hidden="true" />
+          <span className="space-right">{snapshot.VolumeCount}</span>
+          {pluralize(snapshot.VolumeCount, 'volume')}
+        </span>
 
-            {containersCount > 0 && (
-              <span>
-                <span className="space-right space-left">-</span>
-                <Stat
-                  value={snapshot.RunningContainerCount}
-                  iconClass="fa-power-off green-icon"
-                />
-                <Stat
-                  value={snapshot.StoppedContainerCount}
-                  iconClass="fa-power-off red-icon"
-                />
-                <span className="space-right space-left">/</span>
-                <Stat
-                  value={snapshot.HealthyContainerCount}
-                  iconClass="fa-heartbeat green-icon"
-                />
-                <Stat
-                  value={snapshot.UnhealthyContainerCount}
-                  iconClass="fa-heartbeat orange-icon"
-                />
-              </span>
-            )}
-          </span>
-
-          <span style={{ padding: '0 7px 0 7px' }}>
-            <i className="fa fa-hdd space-right" aria-hidden="true" />
-            <span className="space-right">{snapshot.VolumeCount}</span>
-            {pluralize(snapshot.VolumeCount, 'volume')}
-          </span>
-
-          <span style={{ padding: '0 7px 0 7px' }}>
-            <i className="fa fa-clone space-right" aria-hidden="true" />
-            <span className="space-right">{snapshot.ImageCount}</span>
-            {pluralize(snapshot.ImageCount, 'image')}
-          </span>
+        <span>
+          <i className="fa fa-clone space-right" aria-hidden="true" />
+          <span className="space-right">{snapshot.ImageCount}</span>
+          {pluralize(snapshot.ImageCount, 'image')}
         </span>
       </span>
 
@@ -94,7 +94,7 @@ export function EndpointStatsDocker({
           </span>
         )}
         {snapshot.Swarm && (
-          <span style={{ padding: '0 7px 0 0' }}>
+          <span>
             <i
               className="fa fa-hdd space-left space-right"
               aria-hidden="true"
