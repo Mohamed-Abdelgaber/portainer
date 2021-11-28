@@ -11,10 +11,15 @@ import { idsToTagNames } from '@/portainer/helpers/tagHelper';
 import {
   Environment,
   EnvironmentId,
-  EnvironmentType,
+  EnvironmentStatus,
+  PlatformType,
   Tag,
   TagId,
 } from '@/portainer/environments/types';
+import {
+  getPlatformType,
+  isDockerEnvironment,
+} from '@/portainer/environments/utils';
 
 import { EndpointIcon } from './EndpointIcon';
 import { EdgeIndicator } from './EdgeIndicator';
@@ -39,6 +44,8 @@ export function EndpointItem({
 }: EndpointItemProps) {
   const endpointTags = joinTags(tags, model.TagIds);
   const isEdgeEndpoint = model.Type === 4 || model.Type === 7;
+
+  const snapshotTime = getSnapshotTime(model);
 
   return (
     // eslint-disable-next-line jsx-a11y/interactive-supports-focus, jsx-a11y/click-events-have-key-events
@@ -74,24 +81,15 @@ export function EndpointItem({
                   <span>
                     <span
                       className={clsx(
-                        `label`,
+                        'label',
                         `label-${endpointStatusBadge(model.Status)}`
                       )}
                     >
-                      {model.Status === 1 ? 'up' : 'down'}
+                      {model.Status === EnvironmentStatus.Up ? 'up' : 'down'}
                     </span>
-                    {model.Snapshots.length > 0 && (
-                      <span className="space-left small text-muted">
-                        {isoDateFromTimestamp(model.Snapshots[0].Time)}
-                      </span>
-                    )}
-                    {model.Kubernetes.Snapshots.length > 0 && (
-                      <span className="space-left small text-muted">
-                        {isoDateFromTimestamp(
-                          model.Kubernetes.Snapshots[0].Time
-                        )}
-                      </span>
-                    )}
+                    <span className="space-left small text-muted">
+                      {snapshotTime}
+                    </span>
                   </span>
                 )}
               </span>
@@ -116,11 +114,7 @@ export function EndpointItem({
 
           <div className="blocklist-item-line endpoint-item">
             <span className="small text-muted">
-              {[
-                EnvironmentType.Docker,
-                EnvironmentType.AgentOnDocker,
-                EnvironmentType.EdgeAgentOnDocker,
-              ].includes(model.Type) && (
+              {isDockerEnvironment(model.Type) && (
                 <span>
                   {model.Snapshots.length > 0 && (
                     <span className="small text-muted">
@@ -168,4 +162,21 @@ function joinTags(tags: Tag[] = [], tagIds: TagId[]) {
 
   const tagNames = idsToTagNames(tags, tagIds);
   return tagNames.join(',');
+}
+
+function getSnapshotTime(model: Environment) {
+  const platform = getPlatformType(model.Type);
+
+  switch (platform) {
+    case PlatformType.Docker:
+      return model.Snapshots.length > 0
+        ? isoDateFromTimestamp(model.Snapshots[0].Time)
+        : null;
+    case PlatformType.Kubernetes:
+      return model.Kubernetes.Snapshots.length > 0
+        ? isoDateFromTimestamp(model.Kubernetes.Snapshots[0].Time)
+        : null;
+    default:
+      return null;
+  }
 }

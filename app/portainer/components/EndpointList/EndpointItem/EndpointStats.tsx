@@ -1,4 +1,5 @@
-import { Environment, EnvironmentType } from '@/portainer/environments/types';
+import { Environment, PlatformType } from '@/portainer/environments/types';
+import { getPlatformType } from '@/portainer/environments/utils';
 
 import { EndpointStatsDocker } from './EndpointStatsDocker';
 import { EndpointStatsKubernetes } from './EndpointStatsKubernetes';
@@ -8,14 +9,11 @@ interface EndpointStatsProps {
 }
 
 export function EndpointStats({ model }: EndpointStatsProps) {
-  switch (model.Type) {
-    case EnvironmentType.KubernetesLocal:
-    case EnvironmentType.AgentOnKubernetes:
-    case EnvironmentType.EdgeAgentOnKubernetes:
+  const platform = getPlatformType(model.Type);
+  switch (platform) {
+    case PlatformType.Kubernetes:
       return <EndpointStatsKubernetes snapshots={model.Kubernetes.Snapshots} />;
-    case EnvironmentType.Docker:
-    case EnvironmentType.AgentOnDocker:
-    case EnvironmentType.EdgeAgentOnDocker:
+    case PlatformType.Docker:
       return (
         <EndpointStatsDocker snapshots={model.Snapshots} type={model.Type} />
       );

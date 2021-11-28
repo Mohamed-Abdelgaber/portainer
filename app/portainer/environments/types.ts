@@ -72,3 +72,9 @@ export interface Environment {
   Snapshots: DockerSnapshot[];
   Kubernetes: KubernetesSettings;
 }
+
+export enum PlatformType {
+  Docker,
+  Kubernetes,
+  Azure,
+}
