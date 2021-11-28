@@ -1,13 +1,17 @@
 import clsx from 'clsx';
+import { PropsWithChildren } from 'react';
 
-import { DockerSnapshot } from '@/portainer/environments/types';
+import {
+  DockerSnapshot,
+  EnvironmentType,
+} from '@/portainer/environments/types';
 import { pluralize } from '@/portainer/helpers/strings';
 
 import styles from './EndpointStatsDocker.module.css';
 
 interface EndpointStatsDockerProps {
   snapshots: DockerSnapshot[];
-  type: number;
+  type: EnvironmentType;
 }
 
 export function EndpointStatsDocker({
@@ -24,100 +28,106 @@ export function EndpointStatsDocker({
 
   const snapshot = snapshots[0];
 
-  const containersCount =
-    snapshot.RunningContainerCount + snapshot.StoppedContainerCount;
-
   return (
     <div className="blocklist-item-line endpoint-item">
       <span className={clsx('blocklist-item-desc', styles.description)}>
-        <span>
-          <i className="fa fa-th-list space-right" aria-hidden="true" />
-          <span className="space-right">{snapshot.StackCount}</span>
-          {pluralize(snapshot.StackCount, 'stack')}
-        </span>
+        <Stat value={snapshot.StackCount} type="stack" icon="fa-th-list" />
 
         {!!snapshot.Swarm && (
-          <span>
-            <i className="fa fa-list-alt space-right" aria-hidden="true" />
-            <span className="space-right">{snapshot.ServiceCount}</span>
-            {pluralize(snapshot.ServiceCount, 'service')}
-          </span>
+          <Stat
+            value={snapshot.ServiceCount}
+            type="service"
+            icon="fa-list-alt"
+          />
         )}
 
-        <span>
-          <i className="fa fa-cubes space-right" aria-hidden="true" />
-          <span className="space-right">{containersCount}</span>
-          {pluralize(containersCount, 'container')}
+        <ContainerStats
+          running={snapshot.RunningContainerCount}
+          stopped={snapshot.StoppedContainerCount}
+          healthy={snapshot.HealthyContainerCount}
+          unhealthy={snapshot.UnhealthyContainerCount}
+        />
 
-          {containersCount > 0 && (
-            <span>
-              <span className="space-right space-left">-</span>
-              <Stat
-                value={snapshot.RunningContainerCount}
-                iconClass="fa-power-off green-icon"
-              />
-              <Stat
-                value={snapshot.StoppedContainerCount}
-                iconClass="fa-power-off red-icon"
-              />
-              <span className="space-right space-left">/</span>
-              <Stat
-                value={snapshot.HealthyContainerCount}
-                iconClass="fa-heartbeat green-icon"
-              />
-              <Stat
-                value={snapshot.UnhealthyContainerCount}
-                iconClass="fa-heartbeat orange-icon"
-              />
-            </span>
-          )}
-        </span>
-
-        <span>
-          <i className="fa fa-hdd space-right" aria-hidden="true" />
-          <span className="space-right">{snapshot.VolumeCount}</span>
-          {pluralize(snapshot.VolumeCount, 'volume')}
-        </span>
-
-        <span>
-          <i className="fa fa-clone space-right" aria-hidden="true" />
-          <span className="space-right">{snapshot.ImageCount}</span>
-          {pluralize(snapshot.ImageCount, 'image')}
-        </span>
+        <Stat type="volume" value={snapshot.VolumeCount} icon="fa-hdd" />
+        <Stat type="image" value={snapshot.ImageCount} icon="fa-clone" />
       </span>
 
       <span className="small text-muted">
         {snapshot.Swarm ? 'Swarm' : 'Standalone'} {snapshot.DockerVersion}
-        {type === 2 && (
+        {type === EnvironmentType.AgentOnDocker && (
           <span>
             + <i className="fa fa-bolt" aria-hidden="true" /> Agent
           </span>
         )}
         {snapshot.Swarm && (
-          <span>
-            <i
-              className="fa fa-hdd space-left space-right"
-              aria-hidden="true"
-            />
-            <span className="space-right">{snapshot.NodeCount}</span>
-            {pluralize(snapshot.NodeCount, 'node')}
-          </span>
+          <Stat type="node" value={snapshot.NodeCount} icon="fa-hdd" />
         )}
       </span>
     </div>
   );
 }
 
-interface StatProps {
-  value: number;
-  iconClass: string;
+interface ContainerStatsProps {
+  running: number;
+  stopped: number;
+  healthy: number;
+  unhealthy: number;
 }
 
-function Stat({ value, iconClass }: StatProps) {
+function ContainerStats({
+  running,
+  stopped,
+  healthy,
+  unhealthy,
+}: ContainerStatsProps) {
+  const containersCount = running + stopped;
+
   return (
-    <span className="space-right">
-      <i className={clsx('fa  space-right', iconClass)} aria-hidden="true" />
-      {value}
+    <Stat value={containersCount} type="container" icon="fa-cubes">
+      {containersCount > 0 && (
+        <span>
+          <span className="space-right space-left">-</span>
+          <ContainerStat value={running} iconClass="fa-power-off green-icon" />
+          <ContainerStat value={stopped} iconClass="fa-power-off red-icon" />
+          <span className="space-right space-left">/</span>
+          <ContainerStat value={healthy} iconClass="fa-heartbeat green-icon" />
+          <ContainerStat
+            value={unhealthy}
+            iconClass="fa-heartbeat orange-icon"
+          />
+        </span>
+      )}
+    </Stat>
+  );
+
+  interface ContainerStatProps {
+    value: number;
+    iconClass: string;
+  }
+
+  function ContainerStat({ value, iconClass }: ContainerStatProps) {
+    return (
+      <span className="space-right">
+        <i className={clsx('fa  space-right', iconClass)} aria-hidden="true" />
+        {value}
+      </span>
+    );
+  }
+}
+
+interface StatProps {
+  value: number;
+  type: string;
+  icon: string;
+}
+
+function Stat({ value, type, icon, children }: PropsWithChildren<StatProps>) {
+  return (
+    <span>
+      <i className={clsx('fa space-right', icon)} aria-hidden="true" />
+      <span className="space-right">{value}</span>
+      {pluralize(value, type)}
+      {children}
     </span>
   );
 }
