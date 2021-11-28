@@ -1,4 +1,7 @@
+import clsx from 'clsx';
+
 import { DockerSnapshot } from '@/portainer/environments/types';
+import { pluralize } from '@/portainer/helpers/strings';
 
 interface EndpointStatsDockerProps {
   snapshots: DockerSnapshot[];
@@ -29,53 +32,42 @@ export function EndpointStatsDocker({
           <span style={{ padding: '0 7px 0 0' }}>
             <i className="fa fa-th-list space-right" aria-hidden="true" />
             <span className="space-right">{snapshot.StackCount}</span>
-            {snapshot.StackCount === 1 ? 'stack' : 'stacks'}
+            {pluralize(snapshot.StackCount, 'stack')}
           </span>
 
-          {snapshot.Swarm ? (
+          {!!snapshot.Swarm && (
             <span style={{ padding: '0 7px 0 7px' }}>
               <i className="fa fa-list-alt space-right" aria-hidden="true" />
               <span className="space-right">{snapshot.ServiceCount}</span>
-              {snapshot.ServiceCount === 1 ? 'service' : 'services'}
+              {pluralize(snapshot.ServiceCount, 'service')}
             </span>
-          ) : null}
+          )}
 
           <span style={{ padding: '0 7px 0 7px' }}>
             <i className="fa fa-cubes space-right" aria-hidden="true" />
             <span className="space-right">{containersCount}</span>
-            {containersCount === 1 ? 'container' : 'containers'}
+            {pluralize(containersCount, 'container')}
+
             {containersCount > 0 && (
               <span>
                 <span className="space-right space-left">-</span>
-                <span className="space-right">
-                  <i
-                    className="fa fa-power-off green-icon space-right"
-                    aria-hidden="true"
-                  />
-                  {snapshot.RunningContainerCount}
-                </span>
-                <span className="space-right">
-                  <i
-                    className="fa fa-power-off red-icon space-right"
-                    aria-hidden="true"
-                  />
-                  {snapshot.StoppedContainerCount}
-                </span>
+                <Stat
+                  value={snapshot.RunningContainerCount}
+                  iconClass="fa-power-off green-icon"
+                />
+                <Stat
+                  value={snapshot.StoppedContainerCount}
+                  iconClass="fa-power-off red-icon"
+                />
                 <span className="space-right space-left">/</span>
-                <span className="space-right">
-                  <i
-                    className="fa fa-heartbeat green-icon space-right"
-                    aria-hidden="true"
-                  />
-                  {snapshot.HealthyContainerCount}
-                </span>
-                <span className="space-right">
-                  <i
-                    className="fa fa-heartbeat orange-icon space-right"
-                    aria-hidden="true"
-                  />
-                  {snapshot.UnhealthyContainerCount}
-                </span>
+                <Stat
+                  value={snapshot.HealthyContainerCount}
+                  iconClass="fa-heartbeat green-icon"
+                />
+                <Stat
+                  value={snapshot.UnhealthyContainerCount}
+                  iconClass="fa-heartbeat orange-icon"
+                />
               </span>
             )}
           </span>
@@ -83,13 +75,13 @@ export function EndpointStatsDocker({
           <span style={{ padding: '0 7px 0 7px' }}>
             <i className="fa fa-hdd space-right" aria-hidden="true" />
             <span className="space-right">{snapshot.VolumeCount}</span>
-            {snapshot.VolumeCount === 1 ? 'volume' : 'volumes'}
+            {pluralize(snapshot.VolumeCount, 'volume')}
           </span>
 
           <span style={{ padding: '0 7px 0 7px' }}>
             <i className="fa fa-clone space-right" aria-hidden="true" />
             <span className="space-right">{snapshot.ImageCount}</span>
-            {snapshot.ImageCount === 1 ? 'image' : 'images'}
+            {pluralize(snapshot.ImageCount, 'image')}
           </span>
         </span>
       </span>
@@ -108,10 +100,24 @@ export function EndpointStatsDocker({
               aria-hidden="true"
             />
             <span className="space-right">{snapshot.NodeCount}</span>
-            {snapshot.NodeCount === 1 ? 'node' : 'nodes'}
+            {pluralize(snapshot.NodeCount, 'node')}
           </span>
         )}
       </span>
     </div>
+  );
+}
+
+interface StatProps {
+  value: number;
+  iconClass: string;
+}
+
+function Stat({ value, iconClass }: StatProps) {
+  return (
+    <span className="space-right">
+      <i className={clsx('fa  space-right', iconClass)} aria-hidden="true" />
+      {value}
+    </span>
   );
 }
