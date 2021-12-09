@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/portainer/portainer/api/internal/registryutils"
+	"io"
 	"net/http"
 	"strings"
 
@@ -112,7 +113,16 @@ func (handler *Handler) executeServiceWebhook(
 			}
 		}
 	}
-
+	if imageTag != "" {
+		rc, err := dockerClient.ImagePull(context.Background(), service.Spec.TaskTemplate.ContainerSpec.Image, dockertypes.ImagePullOptions{RegistryAuth: serviceUpdateOptions.EncodedRegistryAuth})
+		if err != nil {
+			return &httperror.HandlerError{http.StatusInternalServerError, "Error pulling image with the specified tag", err}
+		}
+		defer rc.Close()
+		if b, err := io.ReadAll(rc); err == nil && strings.Contains(string(b), "manifest unknown") {
+			return &httperror.HandlerError{http.StatusInternalServerError, "No such image with the specified tag", err}
+		}
+	}
 	_, err = dockerClient.ServiceUpdate(context.Background(), resourceID, service.Version, service.Spec, serviceUpdateOptions)
 
 	if err != nil {
