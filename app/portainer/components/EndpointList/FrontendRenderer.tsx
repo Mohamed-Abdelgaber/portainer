@@ -48,51 +48,51 @@ export function FrontendRenderer({
       {currentPageEndpoints.map((endpoint) => children(endpoint))}
     </GenericRenderer>
   );
+}
 
-  function filterEndpoints(
-    endpoints: Environment[] = [],
-    tags: Tag[] = [],
-    textFilter = ''
-  ) {
-    if (!endpoints.length || !textFilter) {
-      return endpoints;
-    }
+function filterEndpoints(
+  endpoints: Environment[] = [],
+  tags: Tag[] = [],
+  textFilter = ''
+) {
+  if (!endpoints.length || !textFilter) {
+    return endpoints;
+  }
 
-    const keywords = textFilter.split(' ');
+  const keywords = textFilter.split(' ');
 
-    return endpoints.filter((endpoint) => {
-      const statusString = convertStatusToString(endpoint.Status);
-      const endpointTags = _.compact(
-        endpoint.TagIds.map((id) => tags.find((t) => t.Id === id))
+  return endpoints.filter((endpoint) => {
+    const statusString = convertStatusToString(endpoint.Status);
+    const endpointTags = _.compact(
+      endpoint.TagIds.map((id) => tags.find((t) => t.Id === id))
+    );
+
+    return keywords
+      .map((k) => k.toLowerCase())
+      .every(
+        (keyword) =>
+          endpoint.Name.toLowerCase().includes(keyword) ||
+          endpoint.GroupName.toLowerCase().includes(keyword) ||
+          endpoint.URL.toLowerCase().includes(keyword) ||
+          endpointTags.some((tag) =>
+            tag.Name.toLowerCase().includes(keyword)
+          ) ||
+          statusString.includes(keyword)
       );
+  });
+}
 
-      return keywords
-        .map((k) => k.toLowerCase())
-        .every(
-          (keyword) =>
-            endpoint.Name.toLowerCase().includes(keyword) ||
-            endpoint.GroupName.toLowerCase().includes(keyword) ||
-            endpoint.URL.toLowerCase().includes(keyword) ||
-            endpointTags.some((tag) =>
-              tag.Name.toLowerCase().includes(keyword)
-            ) ||
-            statusString.includes(keyword)
-        );
-    });
+function paginate<T>(array: T[] = [], page = 1, pageLimit = 10) {
+  if (pageLimit === 0) {
+    return array;
   }
 
-  function paginate<T>(array: T[] = [], page = 1, pageLimit = 10) {
-    if (pageLimit === 0) {
-      return array;
-    }
+  const start = (page - 1) * pageLimit;
+  const end = start + pageLimit;
 
-    const start = (page - 1) * pageLimit;
-    const end = start + pageLimit;
+  return array.slice(start, end);
+}
 
-    return array.slice(start, end);
-  }
-
-  function convertStatusToString(status: EnvironmentStatus): string {
-    return EnvironmentStatus[status].toLowerCase();
-  }
+function convertStatusToString(status: EnvironmentStatus): string {
+  return EnvironmentStatus[status].toLowerCase();
 }
