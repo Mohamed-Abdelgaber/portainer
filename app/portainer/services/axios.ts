@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axiosOrigin, { AxiosRequestConfig } from 'axios';
 
 import { get as localStorageGet } from '../hooks/useLocalStorage';
 
@@ -7,11 +7,11 @@ import {
   portainerAgentTargetHeader,
 } from './http-request.helper';
 
-const axiosApiInstance = axios.create({ baseURL: '/api' });
+const axios = axiosOrigin.create({ baseURL: '/api' });
 
-export default axiosApiInstance;
+export default axios;
 
-axiosApiInstance.interceptors.request.use(async (config) => {
+axios.interceptors.request.use(async (config) => {
   const newConfig = { ...config };
 
   const jwt = localStorageGet('JWT', '');
@@ -39,4 +39,4 @@ export function agentInterceptor(config: AxiosRequestConfig) {
   return newConfig;
 }
 
-axiosApiInstance.interceptors.request.use(agentInterceptor);
+axios.interceptors.request.use(agentInterceptor);
