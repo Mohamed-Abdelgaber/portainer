@@ -14,6 +14,7 @@ import {
 import { EndpointItem } from './EndpointItem';
 import { BackendRenderer, RetrievePageResult } from './BackendRenderer';
 import { FrontendRenderer } from './FrontendRenderer';
+import { KubeconfigButton } from './KubeconfigButton';
 
 interface EndpointListProps {
   endpointInitTime: number;
@@ -95,6 +96,8 @@ export function EndpointList({
                 Refresh
               </button>
             )}
+
+            <KubeconfigButton endpoints={endpoints} />
           </div>
 
           <div className="searchBar">
