@@ -54,29 +54,34 @@ export function BackendRenderer({
     loadEndpoints(textFilter, pageLimit, page);
   }, [textFilter, pageLimit, page, loadEndpoints]);
 
+  return (
+    <GenericRenderer footer={totalCount && footer(totalCount)}>
+      {renderItems(isLoading, totalCount, endpoints, children)}
+    </GenericRenderer>
+  );
+}
+
+function renderItems(
+  isLoading: boolean,
+  totalCount: number,
+  endpoints: Environment[],
+  renderItem: (item: Environment) => ReactNode
+) {
   if (isLoading) {
     return (
-      <GenericRenderer>
-        <div className="text-center text-muted" data-cy="home-loadingEndpoints">
-          Loading...
-        </div>
-      </GenericRenderer>
+      <div className="text-center text-muted" data-cy="home-loadingEndpoints">
+        Loading...
+      </div>
     );
   }
 
   if (!totalCount) {
     return (
-      <GenericRenderer>
-        <div className="text-center text-muted" data-cy="home-noEndpoints">
-          No environments available.
-        </div>
-      </GenericRenderer>
+      <div className="text-center text-muted" data-cy="home-noEndpoints">
+        No environments available.
+      </div>
     );
   }
 
-  return (
-    <GenericRenderer footer={footer(totalCount)}>
-      {endpoints.map((endpoint) => children(endpoint))}
-    </GenericRenderer>
-  );
+  return endpoints.map((endpoint) => renderItem(endpoint));
 }
