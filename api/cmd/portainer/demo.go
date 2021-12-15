@@ -42,6 +42,7 @@ func initDemoUser(
 		Username: "admin",
 		Password: password,
 		Role:     portainer.AdministratorRole,
+		Initial:  true,
 	}
 
 	err = store.User().Create(admin)
@@ -72,6 +73,7 @@ func initDemoEndpoint(
 		Status:             portainer.EndpointStatusUp,
 		Snapshots:          []portainer.DockerSnapshot{},
 		Kubernetes:         portainer.KubernetesDefault(),
+		Readonly:           true,
 	}
 
 	err := store.Endpoint().Create(localEndpoint)

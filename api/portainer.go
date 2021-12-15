@@ -297,6 +297,8 @@ type (
 		SecuritySettings EndpointSecuritySettings
 		// LastCheckInDate mark last check-in date on checkin
 		LastCheckInDate int64
+		// if true then environment can't be edited or deleted
+		Readonly bool `json:"Readonly"`
 
 		// Deprecated fields
 		// Deprecated in DBVersion == 4
@@ -1102,7 +1104,8 @@ type (
 		UserTheme string `example:"dark"`
 		// User role (1 for administrator account and 2 for regular account)
 		Role UserRole `json:"Role" example:"1"`
-
+		// if true then user is the initial user in portainer
+		Initial bool `json:"Initial"`
 		// Deprecated fields
 		// Deprecated in DBVersion == 25
 		PortainerAuthorizations Authorizations         `json:"PortainerAuthorizations"`

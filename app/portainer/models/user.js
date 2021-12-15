@@ -11,6 +11,7 @@ export function UserViewModel(data) {
   this.AuthenticationMethod = data.AuthenticationMethod;
   this.Checked = false;
   this.EndpointAuthorizations = null;
+  this.Initial = data.Initial;
 }
 
 export function UserTokenModel(data) {

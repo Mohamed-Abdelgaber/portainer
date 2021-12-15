@@ -535,7 +535,7 @@ func buildServer(flags *portainer.CLIFlags) portainer.Server {
 		log.Print("[INFO] [main] Starting demo environment")
 		err := initDemoData(dataStore, cryptoService)
 		if err != nil {
-			log.Fatalf("failed initializing demo environment")
+			log.Fatalf("failed initializing demo environment: %s", err)
 		}
 	}
 
@@ -632,6 +632,7 @@ func buildServer(flags *portainer.CLIFlags) portainer.Server {
 				Username: "admin",
 				Role:     portainer.AdministratorRole,
 				Password: adminPasswordHash,
+				Initial:  true,
 			}
 			err := dataStore.User().Create(user)
 			if err != nil {

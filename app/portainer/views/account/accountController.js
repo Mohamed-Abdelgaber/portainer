@@ -76,12 +76,14 @@ angular.module('portainer.app').controller('AccountController', [
     async function initView() {
       const state = StateManager.getState();
       $scope.isDemo = state.application.isDemo;
-
-      $scope.userID = Authentication.getUserDetails().ID;
+      const user = Authentication.getUserDetails();
+      $scope.userID = user.ID;
+      $scope.isInitialUser = user.initialUser;
 
       const data = await UserService.user($scope.userID);
 
-      $scope.formValues.userTheme = data.Usertheme;
+      $scope.formValues.userTheme = data.UserTheme;
+
       SettingsService.publicSettings()
         .then(function success(data) {
           $scope.AuthenticationMethod = data.AuthenticationMethod;
