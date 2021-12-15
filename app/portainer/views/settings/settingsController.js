@@ -75,6 +75,18 @@ angular.module('portainer.app').controller('SettingsController', [
       backupFormType: $scope.BACKUP_FORM_TYPES.FILE,
     };
 
+    $scope.onToggleEnableTelemetry = function onToggleEnableTelemetry(checked) {
+      $scope.$evalAsync(() => {
+        $scope.formValues.enableTelemetry = checked;
+      });
+    };
+
+    $scope.onToggleCustomLogo = function onToggleCustomLogo(checked) {
+      $scope.$evalAsync(() => {
+        $scope.formValues.customLogo = checked;
+      });
+    };
+
     $scope.onToggleAutoBackups = function onToggleAutoBackups(checked) {
       $scope.$evalAsync(() => {
         $scope.formValues.scheduleAutomaticBackups = checked;

@@ -20,9 +20,15 @@
           <!-- logo -->
           <div class="form-group">
             <div class="col-sm-12">
-              <por-switch-field label="Use custom logo" ng-model="formValues.customLogo" name="toggle_logo" disabled="state.isDemo"></por-switch-field>
+              <por-switch-field
+                label="'Use custom logo'"
+                value="formValues.customLogo"
+                name="'toggle_logo'"
+                disabled="state.isDemo"
+                on-change="(onToggleCustomLogo)"
+              ></por-switch-field>
             </div>
-            <div class="col-sm-12" ng-if="state.isDemo">
+            <div class="col-sm-12" ng-if="state.isDemo" style="margin-top: 10px;">
               <span class="small text-muted">You cannot use this feature in the demo version of Portainer.</span>
             </div>
           </div>
@@ -47,13 +53,14 @@
           <div class="form-group">
             <div class="col-sm-12">
               <por-switch-field
-                label="Allow the collection of anonymous statistics"
-                ng-model="formValues.enableTelemetry"
-                name="toggle_enableTelemetry"
+                label="'Allow the collection of anonymous statistics'"
+                value="formValues.enableTelemetry"
+                name="'toggle_enableTelemetry'"
+                on-change="(onToggleEnableTelemetry)"
                 disabled="state.isDemo"
               ></por-switch-field>
             </div>
-            <div class="col-sm-12" ng-if="state.isDemo">
+            <div class="col-sm-12" ng-if="state.isDemo" style="margin-top: 10px;">
               <span class="small text-muted">You cannot use this feature in the demo version of Portainer.</span>
             </div>
             <div class="col-sm-12 text-muted small" style="margin-top: 10px;">
