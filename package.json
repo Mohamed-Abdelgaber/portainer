@@ -44,7 +44,9 @@
     "test:server": "cd api && go test ./...",
     "test:client": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook -o ./dist/storybook"
+    "build-storybook": "build-storybook -o ./dist/storybook",
+    "prescan-translations": "tsc --outDir .tmp/locale-extract/ --target ES5 --jsx preserve",
+    "scan-translations": "i18next-scanner --config ./translations/i18next-scanner.config.js"
   },
   "scriptsComments": {
     "build": "Build the entire app (backend/frontend) in development mode",
@@ -114,8 +116,8 @@
     "rc-slider": "^9.7.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-tooltip": "^4.2.21",
     "react-i18next": "^11.12.0",
+    "react-tooltip": "^4.2.21",
     "sanitize-html": "^2.5.3",
     "spinkit": "^2.0.1",
     "splitargs": "github:deviantony/splitargs#semver:~0.2.0",
@@ -197,6 +199,7 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^5.5.0",
     "husky": ">=4",
+    "i18next-scanner": "^3.1.0",
     "jest": "^27.4.3",
     "lint-staged": ">=10",
     "load-grunt-tasks": "^3.5.2",
