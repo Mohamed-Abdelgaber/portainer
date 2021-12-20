@@ -51,7 +51,7 @@ func initDemoUser(
 }
 
 func initDemoEndpoints(
-	store portainer.DataStore,
+	store dataservices.DataStore,
 ) error {
 
 	err := initDemoLocalEndpoint(store)
