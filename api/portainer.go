@@ -297,8 +297,6 @@ type (
 		SecuritySettings EndpointSecuritySettings
 		// LastCheckInDate mark last check-in date on checkin
 		LastCheckInDate int64
-		// if true then environment can't be edited or deleted
-		Readonly bool `json:"Readonly"`
 
 		// Deprecated fields
 		// Deprecated in DBVersion == 4
